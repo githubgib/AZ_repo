@@ -1,0 +1,11 @@
+name: aida-transcriber
+channels:
+  - https://artifactory.astrazeneca.net/api/conda/conda-v-public
+dependencies:
+  - python=3.8
+  - tesseract=4.1.1
+  - pip
+  - pip:
+      - ./deployment-packages/document-transcriber
+      - pytest
+      - flake8==6.0.0
