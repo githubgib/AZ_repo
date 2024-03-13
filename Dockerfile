@@ -1,6 +1,8 @@
 ARG BASE_IMG=public.ecr.aws/lambda/python:3.8
 FROM ${BASE_IMG}
 
+ARG LAMBDA_TASK_ROOT='root'
+
 # Please note this is used by both the Jenkins build
 # and the codebuild used by application, be careful
 # with changes.
