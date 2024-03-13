@@ -2,21 +2,23 @@ pipeline {
     agent {label 'linux_2_3'}
 
     environment {
-        http_proxy = "http://azpzen.astrazeneca.net:9480"
-        https_proxy = "http://azpzen.astrazeneca.net:9480"
+        # http_proxy = "http://azpzen.astrazeneca.net:9480"
+        # https_proxy = "http://azpzen.astrazeneca.net:9480"
         CONDA_ENV_NAME = "aida-transcriber"
         AIDA_CONTAINER_NAME = "aida-lambda-container"
+        WORKSPACE="gibworkspace"
     }
 
     stages {
         stage('Install') {
             steps {
 
-                sh '''export http_proxy="http://seprivatezen.astrazeneca.net:9480"
-                      export https_proxy="http://seprivatezen.astrazeneca.net:9480"
+                sh '''
+                      # export http_proxy="http://seprivatezen.astrazeneca.net:9480"
+                      # export https_proxy="http://seprivatezen.astrazeneca.net:9480"
 
                       # Remove untracked files and folders from workspace
-                      git clean -fdx
+                      # git clean -fdx
 
                       # Download and install miniforge
                       wget https://github.com/conda-forge/miniforge/releases/download/4.11.0-0/Miniforge3-4.11.0-0-Linux-x86_64.sh -nv -O miniforge.sh
