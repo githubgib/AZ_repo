@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         CONDA_ENV_NAME = "aida-transcriber"
-        AIDA_CONTAINER_NAME = "aida-lambda-container"
+        // AIDA_CONTAINER_NAME = "aida-lambda-container"
         WORKSPACE="gibworkspace"
     }
 
