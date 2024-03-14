@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'Linux (amd64)'}
+    agent any //{label 'Linux (amd64)'}
 
     environment {
         CONDA_ENV_NAME = "aida-transcriber"
