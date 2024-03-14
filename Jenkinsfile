@@ -20,12 +20,15 @@ pipeline {
                         echo "Activating Miniforge..."
                         sh """
                         source $WORKSPACE/miniforge/etc/profile.d/conda.sh
+                        """
+                        echo "Miniforge activated successfully"
+                        
+                        echo "Setting PATH for Conda..."
+                        sh """
                         export PATH=$WORKSPACE/miniforge/condabin:\$PATH
                         """
-                        sleep 5 // Add a 5-second delay
-                        echo "Miniforge activated successfully"
-
-    
+                        echo "PATH set successfully"
+                        
                         echo "Updating Conda..."
                         sh "conda update -y conda"
                         echo "Conda updated successfully"
