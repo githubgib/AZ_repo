@@ -14,7 +14,7 @@ pipeline {
                     try {
                         echo "Installing Miniforge..."
                         sh 'wget https://github.com/conda-forge/miniforge/releases/download/4.11.0-0/Miniforge3-4.11.0-0-Linux-x86_64.sh -nv -O miniforge.sh'
-                        sh 'bash miniforge.sh -b -p $WORKSPACE/miniforge'
+                        // sh 'bash miniforge.sh -b -p $WORKSPACE/miniforge'
                         echo "Miniforge installed successfully"
 
                         echo "Creating Conda environment..."
