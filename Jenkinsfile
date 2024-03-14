@@ -14,6 +14,40 @@ pipeline {
                     try {
                         echo "Installing Miniforge..."
                         sh 'wget https://github.com/conda-forge/miniforge/releases/download/4.11.0-0/Miniforge3-4.11.0-0-Linux-x86_64.sh -nv -O miniforge.sh'
+                        sh 'bash miniforge.sh -b -p $WORKSPACE/miniforge'
+                        echo "Miniforge installed successfully"
+    
+                        echo "Activating Miniforge..."
+                        sh "source $WORKSPACE/miniforge/etc/profile.d/conda.sh"
+                        echo "Miniforge activated successfully"
+    
+                        echo "Updating Conda..."
+                        sh "conda update -y conda"
+                        echo "Conda updated successfully"
+    
+                        echo "Creating Conda environment..."
+                        sh "conda env create -p $WORKSPACE/env/aida-transcriber -f $WORKSPACE/jenkins_env.yml --force"
+                        echo "Conda environment created successfully"
+    
+                        echo "Activating Conda environment..."
+                        sh "conda activate $WORKSPACE/env/${CONDA_ENV_NAME}"
+                        echo "Conda environment activated successfully"
+    
+                        echo "Checking 'transcriber' installation..."
+                        sh "which transcriber"
+                    } catch (Exception e) {
+                        echo "Failed to install Conda environment: ${e}"
+                        error "Failed to install Conda environment"
+                    }
+                }
+            }
+        }
+        stage('Install') {
+            steps {
+                script {
+                    try {
+                        echo "Installing Miniforge..."
+                        sh 'wget https://github.com/conda-forge/miniforge/releases/download/4.11.0-0/Miniforge3-4.11.0-0-Linux-x86_64.sh -nv -O miniforge.sh'
                         // sh 'bash miniforge.sh -b -p $WORKSPACE/miniforge'
                         echo "Miniforge installed successfully"
 
