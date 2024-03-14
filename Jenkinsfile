@@ -22,6 +22,7 @@ pipeline {
                         source $WORKSPACE/miniforge/etc/profile.d/conda.sh
                         export PATH=$WORKSPACE/miniforge/condabin:\$PATH
                         """
+                        sleep 5 // Add a 5-second delay
                         echo "Miniforge activated successfully"
 
     
