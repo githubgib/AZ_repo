@@ -23,14 +23,8 @@ pipeline {
                         """
                         echo "Miniforge activated successfully"
                         
-                        echo "Setting PATH for Conda..."
-                        sh """
-                        export PATH=$WORKSPACE/miniforge/condabin:\$PATH
-                        """
-                        echo "PATH set successfully"
-                        
                         echo "Updating Conda..."
-                        sh "conda update -y conda"
+                        sh "$WORKSPACE/miniforge/condabin/conda update -y conda"
                         echo "Conda updated successfully"
     
                         echo "Creating Conda environment..."
