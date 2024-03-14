@@ -8,7 +8,7 @@ pipeline {
     }
 
     stages {
-        stage('Install') {
+        stage('Install2') {
             steps {
                 script {
                     try {
@@ -42,6 +42,7 @@ pipeline {
                 }
             }
         }
+        
         stage('Install') {
             steps {
                 script {
@@ -98,4 +99,6 @@ pipeline {
             }
         }
     }
+
+}
 }
