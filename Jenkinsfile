@@ -25,7 +25,7 @@ pipeline {
                         echo "Miniforge activated successfully"
         
                         echo "Updating Conda..."
-                        sh "conda update -y conda"
+                        //sh "conda update -y conda"
                         echo "Conda updated successfully"
         
                         echo "Creating Conda environment..."
