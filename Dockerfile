@@ -1,38 +1,36 @@
-ARG BASE_IMG=public.ecr.aws/lambda/python:3.8
-FROM ${BASE_IMG}
+FROM public.ecr.aws/lambda/python:3.9
 
-ARG LAMBDA_TASK_ROOT='root'
-
-# Please note this is used by both the Jenkins build
-# and the codebuild used by application, be careful
-# with changes.
-
-ARG RESOURCES_PATH="deployment-packages/extracting/resources"
-
-# Install GCC for python-Levenshtein 
-RUN yum -y install gcc && yum -y clean all && rm -fr /var/cache
+# We don't want to install libgomp on sagemaker as it doesn't work
+ARG is_sagemaker="1"
 
 # Copy the packages we need to the task
-COPY deployment-packages/document-transcriber/ ${LAMBDA_TASK_ROOT}/document-transcriber
+COPY deployment-packages-sida/automatic-event-adjudication ${LAMBDA_TASK_ROOT}/automatic-event-adjudication
+COPY deployment-packages-sida/flattener ${LAMBDA_TASK_ROOT}/flattener
 
-# Install python requirements
-RUN pip install ${LAMBDA_TASK_ROOT}/document-transcriber && rm -rf /root/.cache
+# Copy over requirements we will need
+COPY deployment-packages-sida/training/requirements.txt ${LAMBDA_TASK_ROOT}/training/requirements.txt
 
-# TODO: Determine why we do this and whether we need to here
+# Copy over script we want
+COPY lambda/install_dependencies.sh ${LAMBDA_TASK_ROOT}/install_dependencies.sh 
+
+# Install python requirements 
+# TODO: Document why we're using in-tree-build --use-feature=in-tree-build (deprecated pip option)
+RUN pip install jmespath==1.0.1 jsonschema==4.19.1 loguru==0.7.2 pandas==2.1.1
+#RUN cd training/ && pip install -r requirements.txt && cd ..
+RUN cd training/ && pip install -r requirements.txt && cd .. && rm -rf /root/.cache
+
+
+# Install libgomp for shared memory usage. It is not installed by default.
+# Note: This does not currently work in SageMaker as it cannot access a mirror list
+RUN if [[ ${is_sagemaker} == "0" ]]; then yum -y install libgomp && yum clean all && rm -rf /var/cache/yum; fi
+
+# Install some dependencies like NLTK
+# Note: We set the NLTK_DATA env variable as it is a non-standard location
+ENV NLTK_DATA=${LAMBDA_TASK_ROOT}/nltk_data
+RUN sh install_dependencies.sh
+
+# Add linting tools (example: flake8 for Python linting)
+RUN pip install flake8
+
+# Set PYTHONHASHSEED
 ENV PYTHONHASHSEED=123
-
-# Install lambda-specific python packages
-RUN pip install jsonschema~=4.5.1 && rm -rf /root/.cache
-
-# Copy over the Lambda wrapper data and scripts we need
-COPY lambda/app.py ${LAMBDA_TASK_ROOT}
-COPY lambda/schemas ${LAMBDA_TASK_ROOT}/schemas
-COPY lambda/data ${LAMBDA_TASK_ROOT}/data
-
-# This is a potential fix for the issue of e.g.
-# https://jenkins.astrazeneca.net/job/R_and_D_IT/job/AIDA/job/Harmonization%20CI/view/change-requests/job/PR-132/3/
-# Using fix from
-# https://stackoverflow.com/questions/51115856/docker-failed-to-export-image-failed-to-create-image-failed-to-get-layer
-RUN true
-
-COPY ${RESOURCES_PATH} ${LAMBDA_TASK_ROOT}/${RESOURCES_PATH}
